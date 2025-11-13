@@ -24,14 +24,22 @@ RegisterNetEvent("apartment:buy", function(apartmentId)
     if not apt then return end
 
     if ownedApts[Player.PlayerData.citizenid] then
-        TriggerClientEvent("QBX:Notify", src, "You already own an apartment!", "error")
+        TriggerClientEvent('ox_lib:notify', src, {
+            title = 'Apartment',
+            description = 'You already own an apartment!',
+            type = 'error'
+        })
         return
     end
 
     local money = Player.Functions.GetMoney("bank") or 0
     if money < apt.price then
         print('Not enough money')
-        TriggerClientEvent("QBX:Notify", src, "Not enough money in your bank account.", "error")
+        TriggerClientEvent('ox_lib:notify', src, {
+            title = 'Apartment',
+            description = 'Not enough money in your bank account.',
+            type = 'error'
+        })
         return
     end
 
@@ -46,18 +54,36 @@ RegisterNetEvent("apartment:buy", function(apartmentId)
 
     ownedApts[Player.PlayerData.citizenid] = { id = apartmentId, bucket = bucket }
 
-    TriggerClientEvent("QBX:Notify", src, "You purchased your apartment!", "success")
+    TriggerClientEvent('ox_lib:notify', src, {
+        title = 'Apartment',
+        description = 'You purchased your apartment!',
+        type = 'success'
+    })
 end)
 
 -- Enter your apartment
-RegisterNetEvent("apartment:enter", function()
+RegisterNetEvent("apartment:enter", function(apartmentId)
     local src = source
     local Player = exports.qbx_core:GetPlayer(src)
     if not Player then return end
 
-    local owned = ownedApts[Player.PlayerData.citizenid]
+    local citizenid = Player.PlayerData.citizenid
+    local owned = ownedApts[citizenid]
     if not owned then
-        TriggerClientEvent("QBX:Notify", src, "You don't own an apartment!", "error")
+        TriggerClientEvent('ox_lib:notify', src, {
+            title = 'Apartment',
+            description = "You don't own an apartment!",
+            type = 'error'
+        })
+        return
+    end
+
+    if owned.id ~= apartmentId then
+        TriggerClientEvent('ox_lib:notify', src, {
+            title = 'Apartment',
+            description = "You don't own this apartment!",
+            type = 'error'
+        })
         return
     end
 
@@ -69,6 +95,7 @@ RegisterNetEvent("apartment:enter", function()
 
     TriggerClientEvent("apartment:entered", src, apt.interior, apt.heading)
 end)
+
 
 -- Invite another player
 RegisterNetEvent("apartment:invite", function(targetId)
