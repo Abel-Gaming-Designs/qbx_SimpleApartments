@@ -9,10 +9,9 @@ Config.Apartments = {
         price = 50000
     },
     ["mid_end_1"] = {
-        entrance = vector3(-1452.2, -540.5, 74.0),
+        entrance = vector3(1263.15, -429.57, 68.8),
         interior = vector3(346.5, -1012.6, -100.2),
         heading = 180.0,
         price = 125000
     }
 }
-
